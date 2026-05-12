@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taller de Estadística Interactiva - Daniel Mahecha</title>
+  <title>Solución Taller EAN - Estadística Inferencial</title>
   <style>
     :root {
       --primary: #378ADD;
@@ -14,6 +14,8 @@
       --text: #1e293b;
       --text-light: #64748b;
       --border: #e2e8f0;
+      --success: #dcfce7;
+      --success-text: #166534;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,430 +24,358 @@
       font-family: 'Inter', -apple-system, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 4rem;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
+      line-height: 1.6;
       padding: 2rem 1rem;
     }
 
-    /* HEADER */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
     header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
 
     h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      color: var(--secondary);
+      font-size: 1.8rem;
+      color: var(--text);
       margin-bottom: 0.5rem;
     }
 
-    .subtitle {
-      font-size: 1.1rem;
-      color: var(--text-light);
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--secondary);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 10px;
     }
 
-    /* TABS */
+    /* NAVIGATION */
     .tabs {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
+      gap: 5px;
       background: #e2e8f0;
-      padding: 0.4rem;
+      padding: 5px;
       border-radius: 12px;
+      margin-bottom: 2rem;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 0.8rem;
+      padding: 10px;
       border: none;
       background: transparent;
       font-weight: 600;
       color: var(--text-light);
       cursor: pointer;
       border-radius: 8px;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
 
     .tab-btn.active {
-      background: var(--card-bg);
+      background: white;
       color: var(--primary);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .content-section { display: none; animation: fadeIn 0.3s ease; }
-    .content-section.active { display: block; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     /* CARDS */
+    .section-content { display: none; }
+    .section-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 1.5rem;
+      padding: 2rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    .card-title {
-      font-size: 1.1rem;
+    .question-title {
+      font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text);
+      color: var(--secondary);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 0.5rem;
     }
 
-    /* CALCULATOR GRID */
-    .calc-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-
-    @media (max-width: 768px) { .calc-grid { grid-template-columns: 1fr; } }
-
-    .input-group { margin-bottom: 1.25rem; }
-    .input-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-light);
-      margin-bottom: 0.5rem;
-    }
-
-    input[type=number], input[type=range], select {
-      width: 100%;
-      padding: 0.6rem 0.8rem;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus { border-color: var(--primary); }
-
-    .result-box {
+    .math-block {
       background: var(--bg);
-      border-radius: 12px;
       padding: 1.5rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      border-radius: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 1rem 0;
+      border-left: 4px solid var(--primary);
     }
 
-    .result-label { font-size: 0.9rem; color: var(--text-light); margin-bottom: 0.5rem; }
-    .result-val { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+    .highlight { color: var(--primary); font-weight: 700; }
 
-    /* STATS STRIP */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
+    .step {
       margin-bottom: 1.5rem;
     }
 
-    .stat-mini {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 1rem;
-      border-radius: 12px;
-      text-align: center;
+    .step-num {
+      background: var(--primary);
+      color: white;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      margin-right: 8px;
     }
 
-    .stat-mini span { display: block; }
-    .stat-mini .label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-light); font-weight: 700; }
-    .stat-mini .val { font-size: 1.25rem; font-weight: 700; color: var(--secondary); }
-
-    /* CHART WRAPPERS */
-    .charts-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-    @media (max-width: 600px) { .charts-row { grid-template-columns: 1fr; } }
-    .chart-container { height: 250px; position: relative; }
+    /* SIMULADOR ORIGINAL STYLES */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .stat-box { background: var(--bg); padding: 1rem; border-radius: 10px; text-align: center; }
+    .chart-container { height: 250px; position: relative; margin-top: 10px; }
 
     /* FOOTER */
-    footer { text-align: center; color: var(--text-light); font-size: 0.85rem; margin-top: 2rem; }
+    footer { text-align: center; margin-top: 3rem; color: var(--text-light); font-size: 0.8rem; }
+
+    .conclusion {
+      background: var(--success);
+      color: var(--success-text);
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <header>
-    <h1>Laboratorio de Estadística Aplicada</h1>
-    <p class="subtitle">Daniel Felipe Mahecha Peña | Solución de Taller e Interactivos</p>
+    <span class="badge">Probabilidad y Estadística Inferencial</span>
+    <h1>Taller: Distribuciones Muestrales</h1>
+    <p style="color: var(--text-light)">Solución Interactiva de Examen - Daniel Felipe Mahecha Peña</p>
   </header>
 
   <nav class="tabs">
-    <button class="tab-btn active" onclick="showTab('taller')">Taller: Cálculo de Muestra</button>
-    <button class="tab-btn" onclick="showTab('simulador')">Simulador de Distribuciones</button>
-    <button class="tab-btn" onclick="showTab('teoria')">Conceptos Clave</button>
+    <button class="tab-btn active" onclick="switchTab('ej1')">Punto 1: TCL</button>
+    <button class="tab-btn" onclick="switchTab('ej2')">Punto 2: Prueba t</button>
+    <button class="tab-btn" onclick="switchTab('ej3')">Punto 3: Proporciones</button>
+    <button class="tab-btn" onclick="switchTab('sim')">Simulador Visual</button>
   </nav>
 
-  <!-- SECCIÓN 1: TALLER INTERACTIVO -->
-  <section id="taller" class="content-section active">
+  <!-- PUNTO 1 -->
+  <section id="ej1" class="section-content active">
     <div class="card">
-      <div class="card-title">📌 Calculadora de Muestra (Población Finita)</div>
-      <div class="calc-grid">
-        <div class="inputs">
-          <div class="input-group">
-            <label>Tamaño de la Población (N)</label>
-            <input type="number" id="calc-N" value="1000" oninput="calculateSample()">
-          </div>
-          <div class="input-group">
-            <label>Nivel de Confianza (Z)</label>
-            <select id="calc-Z" onchange="calculateSample()">
-              <option value="1.645">90% (Z=1.645)</option>
-              <option value="1.96" selected>95% (Z=1.96)</option>
-              <option value="2.576">99% (Z=2.576)</option>
-            </select>
-          </div>
-          <div class="input-group">
-            <label>Margen de Error (e) %</label>
-            <input type="number" id="calc-E" value="5" step="0.5" oninput="calculateSample()">
-          </div>
-          <div class="input-group">
-            <label>Probabilidad de éxito (p)</label>
-            <input type="number" id="calc-P" value="0.5" step="0.1" max="1" min="0" oninput="calculateSample()">
-          </div>
-        </div>
-        <div class="result-box">
-          <span class="result-label">Tamaño de Muestra Recomendado (n)</span>
-          <span class="result-val" id="sample-result">278</span>
-          <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-light)">
-            Fórmula utilizada: <br>
-            $n = \frac{N \cdot Z^2 \cdot p \cdot q}{e^2(N-1) + Z^2 \cdot p \cdot q}$
-          </p>
-        </div>
+      <div class="question-title">1. El Mito del Cambio en la Población</div>
+      <p><em>"Si tomo una muestra más grande, la distribución de la población cambia y se vuelve normal."</em></p>
+      
+      <div class="math-block" style="border-left-color: #e11d48; background: #fff1f2;">
+        <strong>Respuesta: FALSO.</strong>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-title">📊 Análisis de Sensibilidad</div>
-      <p style="font-size: 0.9rem; margin-bottom: 1rem; color: var(--text-light)">Observa cómo el margen de error afecta drásticamente el tamaño de la muestra necesaria.</p>
-      <div class="chart-container" style="height: 300px;">
-        <canvas id="sensitivityChart"></canvas>
+      <div class="step">
+        <p>La afirmación es incorrecta. La <strong>población</strong> es una entidad fija; su forma no cambia sin importar cuántas muestras tomes.</p>
+      </div>
+
+      <div class="step">
+        <p><span class="step-num">!</span> <strong>Lo que realmente dice el TCL:</strong></p>
+        <p>No es la población la que se vuelve normal, sino la <strong>Distribución Muestral de las Medias (x̄)</strong>. A medida que $n$ aumenta:</p>
+        <ul>
+          <li>La distribución de las medias muestrales se aproxima a una normal.</li>
+          <li>La variabilidad (Error Estándar) disminuye: $\sigma_{\bar{x}} = \sigma / \sqrt{n}$.</li>
+          <li>La media de todas las medias posibles será igual a la media poblacional ($\mu$).</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN 2: SIMULADOR (Tu código original mejorado) -->
-  <section id="simulador" class="content-section">
+  <!-- PUNTO 2 -->
+  <section id="ej2" class="section-content">
     <div class="card">
-      <div class="card-title">⚙️ Parámetros del Experimento</div>
-      <div class="calc-grid" style="grid-template-columns: 1fr;">
-        <div class="input-group">
-          <label>n (Muestra): <span id="val-n">30</span></label>
-          <input type="range" id="sl-n" min="5" max="500" value="30" oninput="syncSim()">
-        </div>
-        <div class="input-group">
-          <label>Distribución Poblacional</label>
-          <select id="sel-dist" onchange="resetPop()">
-            <option value="normal">Normal (Campana)</option>
-            <option value="skew">Sesgada (Derecha)</option>
-            <option value="bimodal">Bimodal (Dos picos)</option>
-            <option value="uniform">Uniforme</option>
-          </select>
+      <div class="question-title">2. Prueba de Hipótesis: Laboratorio Farmacéutico</div>
+      <p>Datos: $\mu_0 = 850$ ms, $n = 18$, $\bar{x} = 812$ ms, $s = 74$ ms, $\alpha = 0.05$.</p>
+
+      <div class="step">
+        <p><span class="step-num">1</span> <strong>Definir Hipótesis:</strong></p>
+        <p>$H_0: \mu = 850$ (La pastilla no hace efecto)<br>
+           $H_1: \mu < 850$ (La pastilla reduce el tiempo - Una cola)</p>
+      </div>
+
+      <div class="step">
+        <p><span class="step-num">2</span> <strong>Estadístico de Prueba (t-Student):</strong></p>
+        <p>Como no conocemos $\sigma$, usamos $s$ y la tabla $t$ con $v = 18 - 1 = 17$ grados de libertad.</p>
+        <div class="math-block">
+          t = (812 - 850) / (74 / √18) <br>
+          t = -38 / 17.442 <br>
+          <span class="highlight">t_calculado = -2.178</span>
         </div>
       </div>
-    </div>
 
-    <div class="stats-strip">
-      <div class="stat-mini"><span class="label">Media Pob.</span><span class="val" id="st-mu">-</span></div>
-      <div class="stat-mini"><span class="label">Media Muest.</span><span class="val" id="st-xbar" style="color: var(--primary)">-</span></div>
-      <div class="stat-mini"><span class="label">Error Est.</span><span class="val" id="st-se" style="color: var(--accent)">-</span></div>
-    </div>
-
-    <div class="charts-row">
-      <div class="card" style="margin-bottom:0">
-        <div class="card-title" style="font-size: 0.9rem">Población Real</div>
-        <div class="chart-container"><canvas id="c-pop"></canvas></div>
+      <div class="step">
+        <p><span class="step-num">3</span> <strong>Valor Crítico (Tabla t):</strong></p>
+        <p>Para $v = 17$ y $\alpha = 0.05$ (una cola):</p>
+        <div class="math-block">
+          t_crítico = -1.740
+        </div>
       </div>
-      <div class="card" style="margin-bottom:0">
-        <div class="card-title" style="font-size: 0.9rem">Muestra Actual</div>
-        <div class="chart-container"><canvas id="c-samp"></canvas></div>
+
+      <div class="conclusion">
+        Decisión: Como t_calc (-2.178) < t_crit (-1.740), cae en zona de rechazo. 
+        <strong>La pastilla SÍ reduce significativamente el tiempo de reacción.</strong>
       </div>
     </div>
   </section>
 
-  <!-- SECCIÓN 3: TEORÍA -->
-  <section id="teoria" class="content-section">
+  <!-- PUNTO 3 -->
+  <section id="ej3" class="section-content">
     <div class="card">
-      <div class="card-title">📚 Conceptos Fundamentales del Taller</div>
-      <div style="font-size: 0.95rem; color: var(--text-light)">
-        <p style="margin-bottom: 1rem;"><strong>1. Nivel de Confianza:</strong> Probabilidad de que el parámetro poblacional se encuentre dentro del intervalo de confianza. El estándar es 95% ($Z = 1.96$).</p>
-        <p style="margin-bottom: 1rem;"><strong>2. Margen de Error:</strong> La cantidad de error de muestreo aleatorio que se permite. A menor error, mayor debe ser el tamaño de la muestra.</p>
-        <p style="margin-bottom: 1rem;"><strong>3. Teorema Central del Límite:</strong> Independientemente de la forma de la población, la distribución de las medias muestrales tenderá a ser normal si $n$ es suficientemente grande.</p>
+      <div class="question-title">3. Intervalo de Confianza: Fintech</div>
+      <p>Datos: $n = 400$, Éxitos ($X$) = 312, Confianza = 95%.</p>
+
+      <div class="step">
+        <p><span class="step-num">1</span> <strong>Proporción Muestral (p̂):</strong></p>
+        <div class="math-block">
+          p̂ = 312 / 400 = 0.78 (78%) <br>
+          q̂ = 1 - 0.78 = 0.22
+        </div>
+      </div>
+
+      <div class="step">
+        <p><span class="step-num">2</span> <strong>Valor Z (Tabla proporcionada):</strong></p>
+        <p>Para 95% de confianza (área de 0.9750 en tabla de una cola):</p>
+        <div class="math-block">
+          Z = 1.96
+        </div>
+      </div>
+
+      <div class="step">
+        <p><span class="step-num">3</span> <strong>Cálculo del Margen de Error (E):</strong></p>
+        <div class="math-block">
+          E = Z * √((p̂ * q̂) / n) <br>
+          E = 1.96 * √((0.78 * 0.22) / 400) <br>
+          E = 1.96 * 0.0207 = <span class="highlight">0.0405</span>
+        </div>
+      </div>
+
+      <div class="conclusion">
+        Intervalo: 0.78 ± 0.0405 <br>
+        <strong>[0.7395 , 0.8205]</strong><br>
+        Con un 95% de confianza, la proporción de clientes cumplidos está entre 73.9% y 82.0%.
+      </div>
+    </div>
+  </section>
+
+  <!-- SIMULADOR INTERACTIVO -->
+  <section id="sim" class="section-content">
+    <div class="card">
+      <div class="question-title">Visualización Dinámica del TCL</div>
+      <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">
+        Aquí puedes ver cómo el aumento de <strong>n</strong> no cambia la población (izquierda), pero concentra la muestra (derecha).
+      </p>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-size: 13px; font-weight: 600;">Ajustar n: <span id="n-val" class="highlight">30</span></label>
+        <input type="range" id="sim-n" min="5" max="500" value="30" style="width: 100%; height: 6px; cursor: pointer;" oninput="updateSim()">
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div style="font-size: 11px; color: #999;">MEDIA POBLACIONAL</div>
+          <div id="sim-mu" style="font-size: 1.5rem; font-weight: 700;">-</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size: 11px; color: #999;">MEDIA MUESTRAL</div>
+          <div id="sim-xbar" style="font-size: 1.5rem; font-weight: 700; color: var(--primary);">-</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div class="chart-container"><canvas id="popChart"></canvas></div>
+        <div class="chart-container"><canvas id="sampChart"></canvas></div>
       </div>
     </div>
   </section>
 
   <footer>
-    © 2024 Laboratorio de Estadística - Proyecto Educativo
+    &copy; 2024 Laboratorio de Estadística Inferencial | Daniel Mahecha
   </footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-  // --- LÓGICA DE NAVEGACIÓN ---
-  function showTab(tabId) {
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
-  }
-
-  // --- LÓGICA DE CALCULADORA (Taller) ---
-  function calculateSample() {
-    const N = parseFloat(document.getElementById('calc-N').value);
-    const Z = parseFloat(document.getElementById('calc-Z').value);
-    const e = parseFloat(document.getElementById('calc-E').value) / 100;
-    const p = parseFloat(document.getElementById('calc-P').value);
-    const q = 1 - p;
-
-    if(N && Z && e) {
-      const n = (N * Math.pow(Z, 2) * p * q) / (Math.pow(e, 2) * (N - 1) + Math.pow(Z, 2) * p * q);
-      document.getElementById('sample-result').textContent = Math.ceil(n);
-      updateSensitivityChart(N, Z, p, q);
-    }
-  }
-
-  let sensChart;
-  function updateSensitivityChart(N, Z, p, q) {
-    const errors = [1, 2, 3, 4, 5, 7, 10, 15];
-    const samples = errors.map(er => {
-      const e_val = er / 100;
-      return Math.ceil((N * Math.pow(Z, 2) * p * q) / (Math.pow(e_val, 2) * (N - 1) + Math.pow(Z, 2) * p * q));
-    });
-
-    const ctx = document.getElementById('sensitivityChart').getContext('2d');
-    if (sensChart) sensChart.destroy();
-    
-    sensChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: errors.map(e => e + '%'),
-        datasets: [{
-          label: 'n necesario',
-          data: samples,
-          borderColor: '#378ADD',
-          backgroundColor: 'rgba(55,138,221,0.1)',
-          fill: true,
-          tension: 0.4
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } }
-      }
-    });
-  }
-
-  // --- LÓGICA DE SIMULADOR (Basada en tu código original) ---
   let population = [];
-  let popChart, sampChart;
+  let pChart, sChart;
 
-  function randNormal(mu = 50, sigma = 12) {
+  // Navegación
+  function switchTab(id) {
+    document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    if(id === 'sim') initSim();
+  }
+
+  // Generador de datos (Normal)
+  function randNormal(mu = 50, sigma = 10) {
     let u = Math.random(), v = Math.random();
     return mu + sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
 
-  function generatePop() {
-    const dist = document.getElementById('sel-dist').value;
-    population = [];
-    for (let i = 0; i < 5000; i++) {
-      let v;
-      if (dist === 'normal') v = randNormal(50, 12);
-      else if (dist === 'skew') v = 10 + Math.pow(Math.random(), 0.3) * 80;
-      else if (dist === 'bimodal') v = Math.random() < 0.5 ? randNormal(30, 7) : randNormal(70, 7);
-      else v = Math.random() * 100;
-      population.push(Math.max(0, Math.min(100, v)));
+  function initSim() {
+    if (population.length === 0) {
+      for(let i=0; i<2000; i++) population.push(Math.max(0, Math.min(100, randNormal(50, 15))));
     }
-    updateCharts();
+    updateSim();
   }
 
-  function getHistogram(data) {
-    const bins = 20;
+  function getHist(data) {
+    const bins = 15;
     const counts = new Array(bins).fill(0);
-    data.forEach(x => {
-      let b = Math.floor(x / (100/bins));
+    data.forEach(v => {
+      let b = Math.floor(v / (100/bins));
       counts[Math.min(b, bins-1)]++;
     });
     return counts;
   }
 
-  function updateCharts() {
-    const n = parseInt(document.getElementById('sl-n').value);
+  function updateSim() {
+    const n = parseInt(document.getElementById('sim-n').value);
+    document.getElementById('n-val').textContent = n;
+
     const sample = [];
     for(let i=0; i<n; i++) sample.push(population[Math.floor(Math.random()*population.length)]);
 
     const mu = population.reduce((a,b)=>a+b,0)/population.length;
     const xbar = sample.reduce((a,b)=>a+b,0)/sample.length;
-    const std = Math.sqrt(population.reduce((s,v)=>s+(v-mu)**2,0)/population.length);
-    const se = std / Math.sqrt(n);
 
-    document.getElementById('st-mu').textContent = mu.toFixed(1);
-    document.getElementById('st-xbar').textContent = xbar.toFixed(1);
-    document.getElementById('st-se').textContent = '±' + se.toFixed(2);
+    document.getElementById('sim-mu').textContent = mu.toFixed(2);
+    document.getElementById('sim-xbar').textContent = xbar.toFixed(2);
 
-    const labels = Array.from({length:20}, (_,i)=> (i*5+2.5).toFixed(0));
+    const labels = Array.from({length: 15}, (_, i) => (i*(100/15)).toFixed(0));
 
-    if(!popChart) {
-      popChart = createChart('c-pop', labels, getHistogram(population), '#534AB7');
-      sampChart = createChart('c-samp', labels, getHistogram(sample), '#378ADD');
+    if(!pChart) {
+      pChart = new Chart(document.getElementById('popChart'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Población', data: getHist(population), backgroundColor: '#534AB7' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Distribución Población' } } }
+      });
+      sChart = new Chart(document.getElementById('sampChart'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Muestra', data: getHist(sample), backgroundColor: '#378ADD' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, title: { display: true, text: 'Distribución Muestral' } } }
+      });
     } else {
-      popChart.data.datasets[0].data = getHistogram(population);
-      sampChart.data.datasets[0].data = getHistogram(sample);
-      popChart.update('none');
-      sampChart.update('none');
+      sChart.data.datasets[0].data = getHist(sample);
+      sChart.update();
     }
   }
-
-  function createChart(id, labels, data, color) {
-    return new Chart(document.getElementById(id), {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{ data: data, backgroundColor: color + '80', borderColor: color, borderWidth: 1 }]
-      },
-      options: { 
-        responsive: true, 
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { x: { display: false }, y: { beginAtZero: true } }
-      }
-    });
-  }
-
-  function syncSim() {
-    document.getElementById('val-n').textContent = document.getElementById('sl-n').value;
-    updateCharts();
-  }
-
-  function resetPop() {
-    generatePop();
-    updateCharts();
-  }
-
-  // Inicialización
-  window.onload = () => {
-    calculateSample();
-    generatePop();
-  };
 </script>
 </body>
 </html>
